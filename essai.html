@@ -1,0 +1,1023 @@
+```html
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Le Coffre-Fort du Yéti</title>
+
+
+  <style>
+
+    /* =====================================================
+       RÉGLAGES GÉNÉRAUX
+    ===================================================== */
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+
+      margin: 0;
+      padding: 0;
+
+      width: 100%;
+      height: 100%;
+
+      background: #000;
+
+      font-family: 'Segoe UI', Arial, sans-serif;
+
+      overflow: hidden;
+    }
+
+
+    /* =====================================================
+       LES DIFFÉRENTS ÉCRANS
+    ===================================================== */
+
+    #coffre,
+    #verification,
+    #resultat {
+
+      display: none;
+
+      width: 100vw;
+      height: 100vh;
+
+      justify-content: center;
+      align-items: center;
+    }
+
+
+    /* =====================================================
+       ÉCRAN DU COFFRE-FORT
+    ===================================================== */
+
+    #coffre {
+
+      display: flex;
+
+      position: relative;
+
+      background-color: #050505;
+
+      background-image: url("coffre-fort.png");
+
+      background-size: 85% auto;
+
+      background-position: center;
+
+      background-repeat: no-repeat;
+    }
+
+
+    /* =====================================================
+       INTERFACE DE SAISIE
+    ===================================================== */
+
+    #interface {
+
+      position: absolute;
+
+      top: 50%;
+      left: 67%;
+
+      transform: translate(-50%, -50%);
+
+      width: 32%;
+
+      max-width: 480px;
+
+      padding: 25px;
+
+      text-align: center;
+
+      background: rgba(20, 0, 0, 0.88);
+
+      border: 2px solid #ff3b30;
+
+      border-radius: 12px;
+
+      box-shadow:
+
+        0 0 15px #ff2200,
+
+        0 0 35px rgba(255, 40, 20, 0.5),
+
+        inset 0 0 25px rgba(255, 30, 0, 0.2);
+    }
+
+
+    /* =====================================================
+       TITRE
+    ===================================================== */
+
+    #interface h1 {
+
+      margin-top: 0;
+
+      margin-bottom: 20px;
+
+      color: #ff493d;
+
+      font-family: "Courier New", monospace;
+
+      font-size: clamp(20px, 3vw, 34px);
+
+      letter-spacing: 3px;
+
+      text-shadow:
+
+        0 0 8px #ff2200,
+
+        0 0 20px #ff2200;
+    }
+
+
+    /* =====================================================
+       CHAMP DE CODE
+    ===================================================== */
+
+    #password {
+
+      width: 100%;
+
+      padding: 15px;
+
+      background: rgba(0, 0, 0, 0.85);
+
+      border: 2px solid #ff493d;
+
+      border-radius: 6px;
+
+      color: #ff493d;
+
+      font-family: "Courier New", monospace;
+
+      font-size: 25px;
+
+      text-align: center;
+
+      letter-spacing: 5px;
+
+      outline: none;
+
+      text-transform: uppercase;
+
+      box-shadow:
+
+        0 0 10px rgba(255, 40, 20, 0.5),
+
+        inset 0 0 15px rgba(255, 40, 20, 0.2);
+    }
+
+
+    #password::placeholder {
+
+      color: rgba(255, 70, 60, 0.5);
+
+      letter-spacing: 3px;
+    }
+
+
+    /* =====================================================
+       BOUTON VALIDER
+    ===================================================== */
+
+    #valider {
+
+      margin-top: 20px;
+
+      padding: 12px 30px;
+
+      background: #260000;
+
+      border: 2px solid #ff3b30;
+
+      border-radius: 7px;
+
+      color: #ff493d;
+
+      font-size: 18px;
+
+      font-weight: bold;
+
+      cursor: pointer;
+
+      letter-spacing: 2px;
+
+      text-shadow: 0 0 8px #ff2200;
+
+      box-shadow:
+
+        0 0 12px rgba(255, 40, 20, 0.4);
+    }
+
+
+    #valider:hover {
+
+      background: #570900;
+    }
+
+
+    #valider:disabled {
+
+      opacity: 0.5;
+
+      cursor: default;
+    }
+
+
+    /* =====================================================
+       MESSAGE EN CAS DE CHAMP VIDE
+    ===================================================== */
+
+    #messageErreur {
+
+      min-height: 25px;
+
+      margin-top: 10px;
+
+      color: #ff766b;
+
+      font-size: 14px;
+    }
+
+
+    /* =====================================================
+       ÉCRAN DE VÉRIFICATION
+    ===================================================== */
+
+    #verification {
+
+      flex-direction: column;
+
+      background:
+
+        radial-gradient(
+          circle,
+          #300b06,
+          #000 70%
+        );
+
+      color: #ff493d;
+    }
+
+
+    /* =====================================================
+       ANIMATION DE CHARGEMENT
+    ===================================================== */
+
+    #chargement {
+
+      width: 70px;
+
+      height: 70px;
+
+      border:
+
+        5px solid
+        rgba(255, 60, 40, 0.2);
+
+      border-top:
+
+        5px solid
+        #ff493d;
+
+      border-radius: 50%;
+
+      animation:
+
+        tourner
+        1s
+        linear
+        infinite;
+
+      margin-bottom: 25px;
+    }
+
+
+    #texteVerification {
+
+      font-family: "Courier New", monospace;
+
+      font-size: clamp(18px, 3vw, 28px);
+
+      letter-spacing: 3px;
+
+      text-align: center;
+
+      animation:
+
+        clignoter
+        0.8s
+        infinite
+        alternate;
+    }
+
+
+    /* =====================================================
+       ANIMATION ROTATION
+    ===================================================== */
+
+    @keyframes tourner {
+
+      from {
+
+        transform: rotate(0deg);
+
+      }
+
+      to {
+
+        transform: rotate(360deg);
+
+      }
+
+    }
+
+
+    /* =====================================================
+       ANIMATION CLIGNOTEMENT
+    ===================================================== */
+
+    @keyframes clignoter {
+
+      from {
+
+        opacity: 0.4;
+
+      }
+
+      to {
+
+        opacity: 1;
+
+      }
+
+    }
+
+
+    /* =====================================================
+       ÉCRAN DES VIDÉOS
+    ===================================================== */
+
+    #resultat {
+
+      position: relative;
+
+      background: #000;
+
+      flex-direction: column;
+    }
+
+
+    /* =====================================================
+       VIDÉO
+    ===================================================== */
+
+    #videoResultat {
+
+      width: 100%;
+
+      height: 100%;
+
+      object-fit: contain;
+
+      background: #000;
+    }
+
+
+    /* =====================================================
+       BOUTON RETOUR AU COFFRE
+    ===================================================== */
+
+    #retourCoffre {
+
+      display: none;
+
+      position: absolute;
+
+      bottom: 5%;
+
+      left: 50%;
+
+      transform: translateX(-50%);
+
+      padding: 14px 28px;
+
+      background: rgba(20, 0, 0, 0.95);
+
+      border: 2px solid #ff3b30;
+
+      border-radius: 8px;
+
+      color: #ff493d;
+
+      font-family: "Courier New", monospace;
+
+      font-size: 18px;
+
+      font-weight: bold;
+
+      letter-spacing: 2px;
+
+      cursor: pointer;
+
+      text-shadow: 0 0 8px #ff2200;
+
+      box-shadow:
+
+        0 0 15px #ff2200,
+
+        0 0 30px rgba(255, 40, 20, 0.5);
+
+      z-index: 10;
+    }
+
+
+    #retourCoffre:hover {
+
+      background: #570900;
+    }
+
+
+    /* =====================================================
+       VERSION SMARTPHONE
+    ===================================================== */
+
+    @media (max-width: 700px) {
+
+      #coffre {
+
+        background-size: 115% auto;
+
+        background-position:
+
+          center
+          25%;
+      }
+
+
+      #interface {
+
+        top: auto;
+
+        bottom: 5%;
+
+        left: 50%;
+
+        transform: translateX(-50%);
+
+        width: 90%;
+
+        max-width: 430px;
+
+        padding: 18px;
+
+        background:
+
+          rgba(
+            10,
+            0,
+            0,
+            0.94
+          );
+
+        border:
+
+          2px solid
+          #ff3b30;
+
+        border-radius: 12px;
+
+        box-shadow:
+
+          0 0 15px
+          #ff2200,
+
+          0 0 35px
+          rgba(
+            255,
+            40,
+            20,
+            0.5
+          ),
+
+          inset 0 0 20px
+          rgba(
+            255,
+            30,
+            0,
+            0.2
+          );
+      }
+
+
+      #interface h1 {
+
+        font-size: 22px;
+
+        margin-bottom: 12px;
+      }
+
+
+      #password {
+
+        font-size: 21px;
+
+        letter-spacing: 3px;
+
+        padding: 13px 8px;
+      }
+
+
+      #valider {
+
+        width: 100%;
+
+        margin-top: 12px;
+
+        padding: 13px;
+
+        font-size: 18px;
+      }
+
+
+      /* -----------------------------------------------
+         BOUTON RETOUR SMARTPHONE
+      ------------------------------------------------ */
+
+      #retourCoffre {
+
+        bottom: 4%;
+
+        width: 90%;
+
+        max-width: 400px;
+
+        padding: 14px 10px;
+
+        font-size: 16px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+
+<body>
+
+
+  <!-- =====================================================
+       ÉCRAN DU COFFRE-FORT
+  ====================================================== -->
+
+  <div id="coffre">
+
+
+    <div id="interface">
+
+
+      <h1>
+        ENTRER LE CODE
+      </h1>
+
+
+      <input
+
+        type="text"
+
+        id="password"
+
+        placeholder="CODE"
+
+        maxlength="12"
+
+        autocomplete="off"
+
+        autocapitalize="characters"
+
+        spellcheck="false"
+
+      >
+
+
+      <br>
+
+
+      <button
+
+        id="valider"
+
+        onclick="verifier()"
+
+      >
+
+        VALIDER
+
+      </button>
+
+
+      <p id="messageErreur"></p>
+
+
+    </div>
+
+
+  </div>
+
+
+
+  <!-- =====================================================
+       ÉCRAN DE VÉRIFICATION
+  ====================================================== -->
+
+  <div id="verification">
+
+
+    <div id="chargement"></div>
+
+
+    <div id="texteVerification">
+
+      VÉRIFICATION DU CODE...
+
+    </div>
+
+
+  </div>
+
+
+
+  <!-- =====================================================
+       ÉCRAN VIDÉO
+  ====================================================== -->
+
+  <div id="resultat">
+
+
+    <video
+
+      id="videoResultat"
+
+      playsinline
+
+      preload="auto"
+
+    >
+
+    </video>
+
+
+    <!-- BOUTON RETOUR -->
+
+    <button
+
+      id="retourCoffre"
+
+      onclick="retourAuCoffre()"
+
+    >
+
+      ↩ RETOUR AU CODE
+
+    </button>
+
+
+  </div>
+
+
+
+  <script>
+
+
+    /* =====================================================
+       CODE SECRET
+    ===================================================== */
+
+    const bonCode = "N6V7R9O3J7V4";
+
+
+
+    /* =====================================================
+       RÉCUPÉRATION DES ÉLÉMENTS
+    ===================================================== */
+
+    const coffre =
+      document.getElementById("coffre");
+
+
+    const verification =
+      document.getElementById("verification");
+
+
+    const resultat =
+      document.getElementById("resultat");
+
+
+    const password =
+      document.getElementById("password");
+
+
+    const messageErreur =
+      document.getElementById("messageErreur");
+
+
+    const boutonValider =
+      document.getElementById("valider");
+
+
+    const video =
+      document.getElementById("videoResultat");
+
+
+    const retourCoffre =
+      document.getElementById("retourCoffre");
+
+
+
+    /* =====================================================
+       NORMALISATION DU CODE
+    ===================================================== */
+
+    function normaliser(texte) {
+
+      return texte
+        .trim()
+        .toUpperCase();
+
+    }
+
+
+
+    /* =====================================================
+       VÉRIFICATION DU CODE
+    ===================================================== */
+
+    function verifier() {
+
+
+      const codeEntre =
+        normaliser(password.value);
+
+
+      /* -----------------------------------------------
+         SI AUCUN CODE N'EST ENTRÉ
+      ------------------------------------------------ */
+
+      if (codeEntre === "") {
+
+        messageErreur.textContent =
+          "Entre le code trouvé pendant la chasse !";
+
+        return;
+      }
+
+
+      /* -----------------------------------------------
+         EFFACER LE MESSAGE
+      ------------------------------------------------ */
+
+      messageErreur.textContent = "";
+
+
+      /* -----------------------------------------------
+         BLOQUER LES COMMANDES
+      ------------------------------------------------ */
+
+      password.disabled = true;
+
+      boutonValider.disabled = true;
+
+
+      /* -----------------------------------------------
+         CACHER LE BOUTON RETOUR
+      ------------------------------------------------ */
+
+      retourCoffre.style.display = "none";
+
+
+      /* -----------------------------------------------
+         AFFICHER LA VÉRIFICATION
+      ------------------------------------------------ */
+
+      coffre.style.display = "none";
+
+      verification.style.display = "flex";
+
+
+      /* -----------------------------------------------
+         PETIT TEMPS DE VÉRIFICATION
+      ------------------------------------------------ */
+
+      setTimeout(function() {
+
+
+        const codeCorrect =
+          codeEntre === bonCode;
+
+
+        afficherResultat(codeCorrect);
+
+
+      }, 1300);
+
+    }
+
+
+
+    /* =====================================================
+       AFFICHER LA VIDÉO
+    ===================================================== */
+
+    function afficherResultat(codeCorrect) {
+
+
+      /* -----------------------------------------------
+         CACHER L'ÉCRAN DE VÉRIFICATION
+      ------------------------------------------------ */
+
+      verification.style.display = "none";
+
+
+      /* -----------------------------------------------
+         AFFICHER LA VIDÉO
+      ------------------------------------------------ */
+
+      resultat.style.display = "flex";
+
+
+      /* -----------------------------------------------
+         CACHER LE BOUTON AU DÉBUT
+      ------------------------------------------------ */
+
+      retourCoffre.style.display = "none";
+
+
+      /* -----------------------------------------------
+         RÉINITIALISER LA VIDÉO
+      ------------------------------------------------ */
+
+      video.pause();
+
+      video.currentTime = 0;
+
+
+
+      /* -----------------------------------------------
+         BON CODE → YÉTI
+      ------------------------------------------------ */
+
+      if (codeCorrect) {
+
+        video.src = "yeti.mp4";
+
+      }
+
+
+      /* -----------------------------------------------
+         MAUVAIS CODE → MONSTRE
+      ------------------------------------------------ */
+
+      else {
+
+        video.src = "monstre.mp4";
+
+      }
+
+
+
+      /* -----------------------------------------------
+         LANCEMENT DE LA VIDÉO
+      ------------------------------------------------ */
+
+      video.play().catch(function() {
+
+        console.log(
+          "La lecture automatique a été bloquée."
+        );
+
+      });
+
+    }
+
+
+
+    /* =====================================================
+       FIN DE LA VIDÉO
+       
+       Le bouton apparaît uniquement lorsque
+       la vidéo est complètement terminée.
+    ===================================================== */
+
+    video.addEventListener("ended", function() {
+
+      retourCoffre.style.display = "block";
+
+    });
+
+
+
+    /* =====================================================
+       RETOUR À LA SAISIE DU CODE
+    ===================================================== */
+
+    function retourAuCoffre() {
+
+
+      /* -----------------------------------------------
+         ARRÊTER LA VIDÉO
+      ------------------------------------------------ */
+
+      video.pause();
+
+      video.currentTime = 0;
+
+      video.removeAttribute("src");
+
+      video.load();
+
+
+      /* -----------------------------------------------
+         CACHER LE RÉSULTAT
+      ------------------------------------------------ */
+
+      resultat.style.display = "none";
+
+      retourCoffre.style.display = "none";
+
+
+      /* -----------------------------------------------
+         RÉINITIALISER LE CHAMP
+      ------------------------------------------------ */
+
+      password.value = "";
+
+      password.disabled = false;
+
+      boutonValider.disabled = false;
+
+      messageErreur.textContent = "";
+
+
+      /* -----------------------------------------------
+         RETOUR AU COFFRE
+      ------------------------------------------------ */
+
+      coffre.style.display = "flex";
+
+
+      /* -----------------------------------------------
+         PLACER LE CURSEUR DANS LE CHAMP
+      ------------------------------------------------ */
+
+      setTimeout(function() {
+
+        password.focus();
+
+      }, 100);
+
+    }
+
+
+
+    /* =====================================================
+       TOUCHE ENTRÉE
+    ===================================================== */
+
+    password.addEventListener(
+      "keydown",
+      function(event) {
+
+
+        if (event.key === "Enter") {
+
+          verifier();
+
+        }
+
+      }
+    );
+
+
+  </script>
+
+
+</body>
+
+</html>
+```
